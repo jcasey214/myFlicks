@@ -22,5 +22,15 @@
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="scripts/themoviedb.js"></script>
     <script type="text/javascript" src="scripts/script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.4/handlebars.min.js"></script>
+    <script id="result-template" type="text/x-handlebars-template">
+      <section class="result">
+        <img src={{poster_path}}>
+        <h1>{{original_title}}</h1>
+        <h2>{{director}}</h2>
+        <h2>{{starring}}</h2>
+        <p>{{overview}}</p>
+      </section>
+    </script>
   </body>
 </html>
