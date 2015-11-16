@@ -4,10 +4,13 @@ $(function(){
   function successCB(data) {
     var result = JSON.parse(data);
     console.log(result);
-    for (var i = 0; i < 1; i++) {
+    for (var i = 0; i < result.results.length; i++) {
       var context = result.results[i];
       context.poster_path = "http://image.tmdb.org/t/p/w185" + context.poster_path;
       getDetailsForMovie(context);
+      if (i === 5){
+        break;
+      }
     }
 }
 
@@ -41,26 +44,27 @@ function getDetailsForMovie(movie) {
 
 
   $submit.on('click', function(event){
+    $div.empty();
     event.preventDefault();
     query = $input.val();
     console.log(query);
     theMovieDb.search.getMovie({"query": query}, successCB, errorCB);
   });
 //check availability of title on netflix using netflix roulette api
-  function nnnetflixStatus(obj){
-    var deferred = $.Deferred();
-    var year = obj.release_date.split('-')[0];
-    var title = obj.original_title;
-    $.get('https://netflixroulette.net/api/api.php?title=' + title + '&year=' + year)
-    .done(function(data){
-      console.log(data);
-      obj.netflix = true;
-    })
-    .fail(function(){
-      console.log('That title is not currently available');
-      obj.netflix = false;
-    });
-  }
+  // function nnnetflixStatus(obj){
+  //   var deferred = $.Deferred();
+  //   var year = obj.release_date.split('-')[0];
+  //   var title = obj.original_title;
+  //   $.get('https://netflixroulette.net/api/api.php?title=' + title + '&year=' + year)
+  //   .done(function(data){
+  //     console.log(data);
+  //     obj.netflix = true;
+  //   })
+  //   .fail(function(){
+  //     console.log('That title is not currently available');
+  //     obj.netflix = false;
+  //   });
+  // }
 
 
   function getCast(movie){
@@ -136,7 +140,6 @@ function getDetailsForMovie(movie) {
   }
 
   function netflixStatus(movie){
-    debugger;
     var deferred = jQuery.Deferred();
     var year = movie.release_date.split('-')[0];
     var title = movie.original_title;
@@ -152,6 +155,7 @@ function getDetailsForMovie(movie) {
   });
     return deferred;
   }
+
 
 
 });
