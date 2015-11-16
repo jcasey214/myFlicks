@@ -3,10 +3,13 @@ $(function(){
   function successCB(data) {
     var result = JSON.parse(data);
     console.log(result);
-    $div.append(result.results[0].original_title, result.results[0].overview);
+    $div.append(result.results[0].original_title, result.results[0].overview + '\n');
 
      $div.append('<img src="http://image.tmdb.org/t/p/w185' + result.results[0].poster_path + '">')
-  };
+     netflixStatus(result.results[0]);
+
+  }
+
   function errorCB(data) {
     console.log("Error callback: " + data);
     };
@@ -23,6 +26,15 @@ $(function(){
 
   })
 
-
-
-})
+function netflixStatus(obj){
+    var year = obj.release_date.split('-')[0];
+    var title = obj.original_title;
+    $.get('https://netflixroulette.net/api/api.php?title=' + title + '&year=' + year)
+    .done(function(data){
+      console.log(data);
+    })
+    .fail(function(){
+      console.log('That title is not currently available')
+    });
+}
+  })
