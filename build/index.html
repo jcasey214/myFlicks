@@ -14,7 +14,6 @@
       <button id="submit">Submit</button>
     </form>
     <div>
-
     </div>
 
 
@@ -25,11 +24,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.4/handlebars.min.js"></script>
     <script id="result-template" type="text/x-handlebars-template">
       <section class="result">
-        <img src={{poster_path}}>
-        <h1>{{original_title}}</h1>
-        <h2>{{director}}</h2>
-        <h2>{{starring}}</h2>
-        <p>{{overview}}</p>
+        <figure>
+          <img src={{poster_path}}>
+          <figcaption>
+            <h1>{{original_title}}</h1>
+            <h2>{{director}}</h2>
+            <h3>{{starring}}</h3>
+            <p>{{overview}}</p>
+          </figcaption>
+        </figure>
       </section>
     </script>
   </body>

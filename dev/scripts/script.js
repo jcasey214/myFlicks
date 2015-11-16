@@ -79,7 +79,7 @@ function getDetailsForMovie(movie) {
       var starring = 'Cast: ';
       for (var i = 0; i < cast.length; i ++){
         starring += cast[i].name;
-        if(i < 4){
+        if(i < 5){
           starring += ', ';
         }
         if (i === 5){

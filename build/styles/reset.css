@@ -44,3 +44,25 @@ q:before, q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0; }
+
+html {
+  font-family: sans-serif; }
+
+section.result {
+  display: flex;
+  width: 80vw;
+  align-items: center;
+  justify-content: center; }
+  section.result img {
+    display: inline block;
+    width: 100px; }
+  section.result figcaption {
+    display: inline block; }
+  section.result h1 {
+    font-size: 1.5em; }
+  section.result h2 {
+    font-size: 1.3em; }
+  section.result h3 {
+    font-size: 1.2em; }
+  section.result p {
+    font-size: 1em; }
