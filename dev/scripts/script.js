@@ -6,6 +6,10 @@ $(function(){
   var myList = JSON.parse(localStorage.getItem('myList'));
   console.log(myList);
 
+  if(myList.length > 0){
+    contructList(myList);
+  }
+
 
   $submit.on('click', function(event){
     $div.empty();
@@ -188,10 +192,9 @@ function getDetailsForMovie(movie) {
     console.log(myList);
     var source = $('#my-list-template').html();
     var template = Handlebars.compile(source);
-    var fullList = (JSON.parse(localStorage.getItem('myList')));
     $listDiv.empty();
-    for (var i = 0; i < fullList.length; i++){
-      var context = fullList[i];
+    for (var i = 0; i < myList.length; i++){
+      var context = myList[i];
       var html = template(context);
       $listDiv.append(html);
   }
@@ -199,12 +202,24 @@ function getDetailsForMovie(movie) {
     //});
   }
 
+  function contructList(array){
+    $listDiv = $('div.col-md-3.well');
+    var source = $('#my-list-template').html();
+    var template = Handlebars.compile(source);
+    $listDiv.empty();
+    for (var i = 0; i < array.length; i++){
+      var context = array[i];
+      var html = template(context);
+      $listDiv.append(html);
+  }
+}
 function Movie(obj){
   this.movieTitle = obj.data('movie');
   this.year = obj.data('year');
   this.poster = obj.data('poster');
   this.netflix = obj.data('nf');
 }
+
   // function nnnetflixStatus(obj){
   //   var deferred = $.Deferred();
   //   var year = obj.release_date.split('-')[0];
