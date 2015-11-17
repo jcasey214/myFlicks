@@ -1,9 +1,21 @@
 $(function(){
+  var $submit = $('#submit');
+  var $input = $('input[name="search"]');
+  var query;
+  var $div = $('div.col-md-6');
+  var myList = [];
 
-//function to execute if api call to tmdb is successfull
+  $submit.on('click', function(event){
+    $div.empty();
+    event.preventDefault();
+    query = $input.val();
+    // console.log(query);
+    theMovieDb.search.getMovie({"query": query}, successCB, errorCB);
+  });
+
   function successCB(data) {
     var result = JSON.parse(data);
-    console.log(result);
+    // console.log(result);
     for (var i = 0; i < result.results.length; i++) {
       var context = result.results[i];
       context.poster_path = "http://image.tmdb.org/t/p/w185" + context.poster_path;
@@ -13,6 +25,9 @@ $(function(){
       }
     }
 }
+  function errorCB(data) {
+    console.log("Error callback: " + data);
+    }
 
 function getDetailsForMovie(movie) {
   var source = $('#result-template').html();
@@ -22,19 +37,26 @@ function getDetailsForMovie(movie) {
       getDirector(movie).done(function(movie){
         getTrailer(movie).done(function(movie){
           netflixStatus(movie).done(function(movie){
-          console.log(movie);
+          // console.log(movie);
+          // var dataMovie = new Movie(movie);
+          // console.log(dataMovie);
+          // console.log(dataMovie.toString());
+          // console.log(JSON.stringify(dataMovie));
+          // movie.movieData = JSON.stringify(dataMovie);
           var html = template(movie);
+          // movie.movieData = JSON.stringify(movie);
           $div.append(html);
-          $icon = $('.media-right > i');
-          if ($icon.hasClass('check')){
-            $icon.removeClass('check');
-            $icon.addClass('fa fa-check-circle fa-4x');
-            $icon.css('color', 'green');
-          }else if ($icon.hasClass('circle')){
-            $icon.removeClass('circle');
-            $icon.addClass('fa fa-circle fa-4x');
-            $icon.css('color', 'red');
-          }
+          // $icon = $('.media-right > i');
+          // if ($icon.hasClass('check')){
+          //   $icon.removeClass('check');
+          //   $icon.addClass('fa fa-check-circle fa-4x')
+          //   .css('color', 'green');
+          // }else if ($icon.hasClass('circle')){
+          //   $icon.removeClass('circle');
+          //   $icon.addClass('fa fa-circle fa-4x')
+          //   .css('color', 'red');
+          // }
+          addButtonEventListener();
         });
         });
       });
@@ -44,48 +66,13 @@ function getDetailsForMovie(movie) {
     });
 }
 
-//function to execute if api call to tmdb fails
-  function errorCB(data) {
-    console.log("Error callback: " + data);
-    }
-
-  var $submit = $('#submit');
-  var $input = $('input[name="search"]');
-  var query;
-  var $div = $('div.col-md-6');
-
-
-  $submit.on('click', function(event){
-    $div.empty();
-    event.preventDefault();
-    query = $input.val();
-    console.log(query);
-    theMovieDb.search.getMovie({"query": query}, successCB, errorCB);
-  });
-//check availability of title on netflix using netflix roulette api
-  // function nnnetflixStatus(obj){
-  //   var deferred = $.Deferred();
-  //   var year = obj.release_date.split('-')[0];
-  //   var title = obj.original_title;
-  //   $.get('https://netflixroulette.net/api/api.php?title=' + title + '&year=' + year)
-  //   .done(function(data){
-  //     console.log(data);
-  //     obj.netflix = true;
-  //   })
-  //   .fail(function(){
-  //     console.log('That title is not currently available');
-  //     obj.netflix = false;
-  //   });
-  // }
-
-
   function getCast(movie){
     var deferred = jQuery.Deferred();
 
     theMovieDb.movies.getCredits({"id": movie.id },
      function(data){
       var result = JSON.parse(data);
-      console.log(result);
+      // console.log(result);
       // obj.director = result.crew[0].name;
       var cast = result.cast;
       var starring = 'Cast: ';
@@ -98,7 +85,7 @@ function getDetailsForMovie(movie) {
           break;
         }
       }
-      console.log(starring);
+      // console.log(starring);
       movie.starring = starring;
       deferred.resolve(movie);
     }, function(error){
@@ -122,7 +109,7 @@ function getDetailsForMovie(movie) {
         }
       }
        // get the director out of the result
-      console.log(director);
+      // console.log(director);
       movie.director = director;
       deferred.resolve(movie);
     }, function(error){
@@ -132,16 +119,15 @@ function getDetailsForMovie(movie) {
     return deferred;
   }
 
-
   function getTrailer(movie){
     var deferred = jQuery.Deferred();
     theMovieDb.movies.getTrailers({"id": movie.id }, function(data){
       var result = JSON.parse(data);
-      console.log(result);
+      // console.log(result);
       if(result.youtube.length > 0) {
         // obj.director = result.crew[0].name;
         var trailerLink = 'https: //www.youtube.com/watch?v=' + result.youtube[0].source;// get the director out of the result
-        console.log(trailerLink);
+        // console.log(trailerLink);
         movie.trailerLink = trailerLink;
       }
       deferred.resolve(movie);
@@ -154,16 +140,26 @@ function getDetailsForMovie(movie) {
   function netflixStatus(movie){
     var deferred = jQuery.Deferred();
     var year = movie.release_date.split('-')[0];
+    movie.year = year;
     var title = movie.original_title;
     // var check = "class='fa fa-check-circle' color='green'";
     // var circle = 'class="fa fa-circle" color="red"';
     Netflix.search(title)
     .done(function(data){
-      console.log(data);
+      // console.log(data);
       if(data.length > 0){
-      movie.netflix = true;
-      movie.netflixIcon = 'check';
-      deferred.resolve(movie);
+        for(var i = 0; i < data.length; i ++){
+          if(data[i].title === title){
+            movie.netflix = true;
+            // movie.netflixIcon = 'check';
+            deferred.resolve(movie);
+          }else{
+            console.log('The movie is not currently available on Netflix');
+            movie.netflix = false;
+            // movie.netflixIcon = 'circle';
+            deferred.resolve(movie);
+          }
+        }
     }else{
       console.log('The movie is not currently available on Netflix');
       movie.netflix = false;
@@ -175,6 +171,47 @@ function getDetailsForMovie(movie) {
   });
     return deferred;
   }
+
+  function addButtonEventListener(){
+  $addButton = $('button.btn.btn-warning');
+  $addButton.click(function(){
+    console.log('clicked');
+    console.log(event.target);
+    var $selection = $(event.target);
+    var movieInfo = new Movie($selection);
+    myList.push(movieInfo);
+    localStorage.setItem('myList', JSON.stringify(myList));
+    console.log(myList);
+    event.stopPropagation();
+    });
+  }
+
+function Movie(obj){
+  this.movieTitle = obj.data('movie');
+  this.year = obj.data('year');
+  this.poster = obj.data('poster');
+  this.netflix = obj.data('nf');
+}
+  // function nnnetflixStatus(obj){
+  //   var deferred = $.Deferred();
+  //   var year = obj.release_date.split('-')[0];
+  //   var title = obj.original_title;
+  //   $.get('https://netflixroulette.net/api/api.php?title=' + title + '&year=' + year)
+  //   .done(function(data){
+  //     console.log(data);
+  //     obj.netflix = true;
+  //   })
+  //   .fail(function(){
+  //     console.log('That title is not currently available');
+  //     obj.netflix = false;
+  //   });
+  // }
+
+
+
+
+
+
 
 
 

@@ -84,15 +84,21 @@
       <div class="media">
         <div class="media-left">
           <img class="media-object" src={{poster_path}} alt={{title}} width="100px">
+          <button class="btn btn-warning" data-movie={{original_title}} data-year={{year}} data-nf={{netflix}} data-poster={{poster_path}}>Add</button>
         </div>
         <div class="media-body">
           <h4 class="media-heading">{{original_title}}</h4>
+          <h5 class="media-heading">{{year}}</h5>
           <h5 class="media-heading">{{director}}</h5>
           <h5 class "media-heading">{{starring}}</h5>
           <p>{{overview}}</p>
         </div>
         <div class="media-right" width="50">
-          <i class={{netflixIcon}} width="50px"></i>
+          {{#if netflix}}
+            <i class="fa fa-check-circle fa-4x" width="50px" style="color: green"></i>
+          {{else}}
+            <i class='fa fa-circle fa-4x' width="50px" style="color: red"></i>
+          {{/if}}
         </div>
         <hr>
       </div>
