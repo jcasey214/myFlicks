@@ -3,7 +3,9 @@ $(function(){
   var $input = $('input[name="search"]');
   var query;
   var $div = $('div.col-md-6');
-  var myList = [];
+  var myList = JSON.parse(localStorage.getItem('myList'));
+  console.log(myList);
+
 
   $submit.on('click', function(event){
     $div.empty();
@@ -15,7 +17,7 @@ $(function(){
 
   function successCB(data) {
     var result = JSON.parse(data);
-    // console.log(result);
+    console.log(result);
     for (var i = 0; i < result.results.length; i++) {
       var context = result.results[i];
       context.poster_path = "http://image.tmdb.org/t/p/w185" + context.poster_path;
@@ -56,7 +58,8 @@ function getDetailsForMovie(movie) {
           //   $icon.addClass('fa fa-circle fa-4x')
           //   .css('color', 'red');
           // }
-          addButtonEventListener();
+          // addButtonEventListener();
+          $('#' + movie.id).on('click', addButtonEventListener);
         });
         });
       });
@@ -173,8 +176,9 @@ function getDetailsForMovie(movie) {
   }
 
   function addButtonEventListener(){
-  $addButton = $('button.btn.btn-warning');
-  $addButton.click(function(){
+  // $addButton = $('button.btn.btn-warning');
+  $listDiv = $('div.col-md-3.well');
+  //$addButton.click(function(){
     console.log('clicked');
     console.log(event.target);
     var $selection = $(event.target);
@@ -182,8 +186,17 @@ function getDetailsForMovie(movie) {
     myList.push(movieInfo);
     localStorage.setItem('myList', JSON.stringify(myList));
     console.log(myList);
+    var source = $('#my-list-template').html();
+    var template = Handlebars.compile(source);
+    var fullList = (JSON.parse(localStorage.getItem('myList')));
+    $listDiv.empty();
+    for (var i = 0; i < fullList.length; i++){
+      var context = fullList[i];
+      var html = template(context);
+      $listDiv.append(html);
+  }
     event.stopPropagation();
-    });
+    //});
   }
 
 function Movie(obj){

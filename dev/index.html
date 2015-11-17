@@ -63,7 +63,7 @@
       <div class="col-md-6">
 
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3 well">
 
       </div>
 
@@ -82,9 +82,9 @@
     <script id="result-template" type="text/x-handlebars-template">
       <section class="result">
       <div class="media">
-        <div class="media-left">
+        <div class="media-left media-middle">
           <img class="media-object" src={{poster_path}} alt={{title}} width="100px">
-          <button class="btn btn-warning" data-movie={{original_title}} data-year={{year}} data-nf={{netflix}} data-poster={{poster_path}}>Add</button>
+          <button class="btn btn-warning" data-movie=" {{original_title}}" data-year={{year}} data-nf={{netflix}} data-poster={{poster_path}} id={{id}}>Add</button>
         </div>
         <div class="media-body">
           <h4 class="media-heading">{{original_title}}</h4>
@@ -103,6 +103,16 @@
         <hr>
       </div>
       </section>
+    </script>
+    <script id="my-list-template" type="text/x-handlebars-template">
+        <div class="thumbnail">
+          <img src="{{poster}}" alt="{{movieTitle}}" width="50px">
+          <div class="caption">
+            <h3>{{movieTitle}}</h3>
+            <h4>{{year}}</h4>
+          </div>
+        </div>
+    </div>
     </script>
   </body>
 </html>
