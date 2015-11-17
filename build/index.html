@@ -3,10 +3,12 @@
   <head>
     <meta charset="utf-8">
     <title>My Flicks</title>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="styles/reset.css" media="screen" title="no
      title" charset="utf-8">
-    <link rel="stylesheet" href="styles/style.css" media="screen" title="no
-    title" charset="utf-8">
+    <!-- <link rel="stylesheet" href="styles/style.css" media="screen" title="no
+    title" charset="utf-8">  -->
   </head>
   <body>
 
@@ -19,7 +21,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Brand</a>
+        <a class="navbar-brand" href="#">myFlicks</a>
       </div>
 
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -56,7 +58,16 @@
       <input type="text" name="search" value="">
       <button id="submit">Submit</button>
     </form> -->
-    <div id="result">
+    <div class="container">
+      <div class="row">
+      <div class="col-md-6">
+
+      </div>
+      <div class="col-md-3">
+
+      </div>
+
+      </div>
     </div>
 
 
@@ -67,7 +78,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.4/handlebars.min.js"></script>
     <script id="result-template" type="text/x-handlebars-template">
       <section class="result">
-        <figure>
+        <!-- <figure>
           <img src={{poster_path}}>
           <figcaption>
             <h1>{{original_title}}</h1>
@@ -75,7 +86,22 @@
             <h3>{{starring}}</h3>
             <p>{{overview}}</p>
           </figcaption>
-        </figure>
+        </figure> -->
+      <div class="media">
+        <div class="media-left">
+          <img class="media-object" src={{poster_path}} alt={{title}} width="100px">
+        </div>
+        <div class="media-body">
+          <h4 class="media-heading">{{original_title}}</h4>
+          <h5 class="media-heading">{{director}}</h5>
+          <h5 class "media-heading">{{starring}}</h5>
+          <p>{{overview}}</p>
+        </div>
+        <div class="media-right" width="50">
+          <i class={{netflixIcon}} width="50px"></i>
+        </div>
+        <hr>
+      </div>
       </section>
     </script>
   </body>

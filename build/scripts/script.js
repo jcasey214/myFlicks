@@ -24,6 +24,16 @@ function getDetailsForMovie(movie) {
         console.log(movie);
         var html = template(movie);
         $div.append(html);
+        $icon = $('.media-right > i');
+        if ($icon.hasClass('check')){
+          $icon.removeClass('check');
+          $icon.addClass('fa fa-check-circle fa-4x');
+          $icon.css('color', 'green');
+        }else if ($icon.hasClass('circle')){
+          $icon.removeClass('circle');
+          $icon.addClass('fa fa-circle fa-4x');
+          $icon.css('color', 'red');
+        }
       });
       });
     });
@@ -40,7 +50,7 @@ function getDetailsForMovie(movie) {
   var $submit = $('#submit');
   var $input = $('input[name="search"]');
   var query;
-  var $div = $('div#result');
+  var $div = $('div.col-md-6');
 
 
   $submit.on('click', function(event){
@@ -143,14 +153,18 @@ function getDetailsForMovie(movie) {
     var deferred = jQuery.Deferred();
     var year = movie.release_date.split('-')[0];
     var title = movie.original_title;
+    // var check = "class='fa fa-check-circle' color='green'";
+    // var circle = 'class="fa fa-circle" color="red"';
     $.get('https://netflixroulette.net/api/api.php?title=' + title + '&year=' + year)
     .done(function(data){
       console.log(data);
       movie.netflix = true;
+      movie.netflixIcon = 'check';
       deferred.resolve(movie);
     }).fail(function(error){
       console.log('That title is not currently available');
       movie.netflix = false;
+      movie.netflixIcon = 'circle';
       deferred.resolve(movie);
   });
     return deferred;

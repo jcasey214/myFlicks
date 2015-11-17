@@ -17,7 +17,7 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 body {
-  margin: 0;
+  margin: 0 auto;
 }
 article,
 aside,
@@ -1590,6 +1590,7 @@ pre code {
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px;
+  margin-top: 10px;
 }
 @media (min-width: 768px) {
   .container {
