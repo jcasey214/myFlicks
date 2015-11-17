@@ -5,8 +5,7 @@ $(function(){
   var $div = $('div.col-md-6');
   var myList = JSON.parse(localStorage.getItem('myList'));
   console.log(myList);
-
-  if(myList.length > 0){
+  if(myList !== null && myList.length > 0){
     contructList(myList);
   }
 
