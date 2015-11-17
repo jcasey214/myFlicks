@@ -3,7 +3,7 @@ $(function(){
   var $input = $('input[name="search"]');
   var query;
   var $div = $('div.col-md-6');
-  var myList = JSON.parse(localStorage.getItem('myList'));
+  var myList = JSON.parse(localStorage.getItem('myList')) || [];
   console.log(myList);
   if(myList !== null && myList.length > 0){
     contructList(myList);
