@@ -74,19 +74,13 @@
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="scripts/themoviedb.js"></script>
+    <script type="text/javascript" src="scripts/netflixSearch.js"></script>
     <script type="text/javascript" src="scripts/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.4/handlebars.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha256-Sk3nkD6mLTMOF0EOpNtsIry+s1CsaqQC1rVLTAy+0yc= sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous">
+    </script>
     <script id="result-template" type="text/x-handlebars-template">
       <section class="result">
-        <!-- <figure>
-          <img src={{poster_path}}>
-          <figcaption>
-            <h1>{{original_title}}</h1>
-            <h2>{{director}}</h2>
-            <h3>{{starring}}</h3>
-            <p>{{overview}}</p>
-          </figcaption>
-        </figure> -->
       <div class="media">
         <div class="media-left">
           <img class="media-object" src={{poster_path}} alt={{title}} width="100px">

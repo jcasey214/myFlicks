@@ -17,29 +17,31 @@ $(function(){
 function getDetailsForMovie(movie) {
   var source = $('#result-template').html();
   var template = Handlebars.compile(source);
-  getCast(movie).done(function(movie){
-    getDirector(movie).done(function(movie){
-      getTrailer(movie).done(function(movie){
-        netflixStatus(movie).done(function(movie){
-        console.log(movie);
-        var html = template(movie);
-        $div.append(html);
-        $icon = $('.media-right > i');
-        if ($icon.hasClass('check')){
-          $icon.removeClass('check');
-          $icon.addClass('fa fa-check-circle fa-4x');
-          $icon.css('color', 'green');
-        }else if ($icon.hasClass('circle')){
-          $icon.removeClass('circle');
-          $icon.addClass('fa fa-circle fa-4x');
-          $icon.css('color', 'red');
-        }
+  getCast(movie)
+    .done(function(movie){
+      getDirector(movie).done(function(movie){
+        getTrailer(movie).done(function(movie){
+          netflixStatus(movie).done(function(movie){
+          console.log(movie);
+          var html = template(movie);
+          $div.append(html);
+          $icon = $('.media-right > i');
+          if ($icon.hasClass('check')){
+            $icon.removeClass('check');
+            $icon.addClass('fa fa-check-circle fa-4x');
+            $icon.css('color', 'green');
+          }else if ($icon.hasClass('circle')){
+            $icon.removeClass('circle');
+            $icon.addClass('fa fa-circle fa-4x');
+            $icon.css('color', 'red');
+          }
+        });
+        });
       });
-      });
+    })
+    .fail(function(){
+      console.log(error);
     });
-  }).fail(function(){
-    console.log(error);
-  });
 }
 
 //function to execute if api call to tmdb fails
@@ -155,16 +157,20 @@ function getDetailsForMovie(movie) {
     var title = movie.original_title;
     // var check = "class='fa fa-check-circle' color='green'";
     // var circle = 'class="fa fa-circle" color="red"';
-    $.get('https://netflixroulette.net/api/api.php?title=' + title + '&year=' + year)
+    Netflix.search(title)
     .done(function(data){
       console.log(data);
+      if(data.length > 0){
       movie.netflix = true;
       movie.netflixIcon = 'check';
       deferred.resolve(movie);
-    }).fail(function(error){
-      console.log('That title is not currently available');
+    }else{
+      console.log('The movie is not currently available on Netflix');
       movie.netflix = false;
       movie.netflixIcon = 'circle';
+      deferred.resolve(movie);
+    }
+    }).fail(function(error){
       deferred.resolve(movie);
   });
     return deferred;
