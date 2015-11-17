@@ -40,7 +40,7 @@ function getDetailsForMovie(movie) {
   var $submit = $('#submit');
   var $input = $('input[name="search"]');
   var query;
-  var $div = $('div');
+  var $div = $('div#result');
 
 
   $submit.on('click', function(event){
