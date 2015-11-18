@@ -5,9 +5,12 @@ $(function(){
   var $div = $('div.col-md-6');
   var $listDiv = $('div.col-md-3.well');
   var myList = JSON.parse(localStorage.getItem('myList')) || [];
+  if(JSON.parse(localStorage.getItem('myList')) === null){
+    localStorage.setItem('myList', JSON.stringify(myList));
+  }
   console.log(myList);
   if(myList !== null && myList.length > 0){
-    contructList(myList);
+    constructList(myList);
   }else{
     $listDiv.hide();
   }
@@ -69,7 +72,7 @@ function getDetailsForMovie(movie) {
           //   .css('color', 'red');
           // }
           // addButtonEventListener();
-          $('#' + movie.id).on('click', addButtonEventListener);
+          $('#' + movie.id + "-add").on('click', addButtonEventListener);
         });
         });
       });
@@ -187,41 +190,46 @@ function getDetailsForMovie(movie) {
 
   function addButtonEventListener(){
   // $addButton = $('button.btn.btn-warning');
-  $listDiv = $('div.col-md-3.well');
+  // $listDiv = $('div.col-md-3.well');
   //$addButton.click(function(){
     console.log('clicked');
     console.log(event.target);
     var $selection = $(event.target);
     var movieInfo = new Movie($selection);
     console.log(movieInfo);
+    myList = JSON.parse(localStorage.getItem('myList'));
     myList.push(movieInfo);
     localStorage.setItem('myList', JSON.stringify(myList));
     console.log(myList);
-    var source = $('#my-list-template').html();
-    var template = Handlebars.compile(source);
-    $listDiv.show().slideDown();
-    $listDiv.empty();
-    $listDiv.append('<h2>My List</h2>');
-    for (var i = 0; i < myList.length; i++){
-      var context = myList[i];
-      var html = template(context);
-      $listDiv.append(html);
-  }
-    event.stopPropagation();
+    constructList(myList);
+    // var source = $('#my-list-template').html();
+    // var template = Handlebars.compile(source);
+    // $listDiv.show().slideDown();
+    // $listDiv.empty();
+    // $listDiv.append('<h2>My List</h2>');
+    // for (var i = 0; i < myList.length; i++){
+    //   var context = myList[i];
+    //   var html = template(context);
+    //   $listDiv.append(html);
+  // }
+    // event.stopPropagation();
     //});
-  }
+}
 
-  function contructList(array){
+  function constructList(array){
     $listDiv = $('div.col-md-3.well');
     var source = $('#my-list-template').html();
     var template = Handlebars.compile(source);
+    $listDiv.show().slideDown();
     $listDiv.empty();
     $listDiv.append('<h2>My List</h2>');
     for (var i = 0; i < array.length; i++){
       var context = array[i];
       var html = template(context);
       $listDiv.append(html);
-  }
+      $('#' + context.idNum + "-remove").on('click', removeItem);
+      console.log('i#' + context.idNum);
+    }
 }
 function Movie(obj){
   this.movieTitle = obj.data('movie');
@@ -231,8 +239,27 @@ function Movie(obj){
   this.idNum = obj.attr('id');
 }
 
-function removeEventListener(){
-
+function removeItem(){
+  var result = [];
+  console.log('clicked');
+  var removalID = $(event.target).attr('id');
+  removalID = removalID.replace('-remove', '');
+  console.log(removalID);
+  for(var i = 0; i < myList.length; i++){
+    console.log(myList[i].idNum);
+    if(myList[i].idNum === removalID){
+      continue;
+    }else{
+      result.push(myList[i]);
+    }
+  }
+  myList = result;
+  localStorage.setItem('myList', JSON.stringify(myList));
+  constructList(JSON.parse(localStorage.getItem('myList')));
+  if(myList.length === 0){
+    $listDiv.hide();
+  }
+  return myList;
 }
 
   // function nnnetflixStatus(obj){

@@ -5,10 +5,10 @@
     <title>My Flicks</title>
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <!-- <link rel="stylesheet" href="styles/reset.css" media="screen" title="no
-     title" charset="utf-8"> -->
-    <link rel="stylesheet" href="styles/style.css" media="screen" title="no
-    title" charset="utf-8"> 
+    <link rel="stylesheet" href="styles/reset.css" media="screen" title="no
+     title" charset="utf-8">
+    <!-- <link rel="stylesheet" href="styles/style.css" media="screen" title="no
+    title" charset="utf-8">  -->
   </head>
   <body>
 
@@ -60,9 +60,7 @@
         <img src="../assets/action.png" width="60%" style="opacity:0.3">
       </div>
       <div class="col-md-3 well">
-
       </div>
-
       </div>
     </div>
 
@@ -80,7 +78,7 @@
       <div class="media">
         <div class="media-left media-middle">
             <img class="media-object" src={{poster_path}} alt={{title}} width="100px">
-          <button class="btn btn-warning" data-movie=" {{original_title}}" data-year={{year}} data-nf={{netflix}} data-poster={{poster_path}} id={{id}}>Add</button>
+          <button class="btn btn-warning" data-movie=" {{original_title}}" data-year="{{year}}" data-nf="{{netflix}}" data-poster="{{poster_path}}" id="{{id}}-add">Add</button>
         </div>
         <div class="media-body">
           <h4 class="media-heading">{{original_title}}</h4>
@@ -102,11 +100,18 @@
     </script>
     <script id="my-list-template" type="text/x-handlebars-template">
         <div class="thumbnail">
-          <i class="fa fa-times fa-1x remove" style="color: silver" id={{idNum}}> Remove</i>
+          <div class="media-right">
+            {{#if netflix}}
+              <i class="fa fa-check-circle fa-4x" width="50px" style="color: green"></i>
+            {{else}}
+              <i class='fa fa-circle fa-4x' width="50px" style="color: red"></i>
+            {{/if}}
+          </div>
           <img src="{{poster}}" alt="{{movieTitle}}" width="75px">
           <div class="caption">
             <h3>{{movieTitle}}</h3>
             <h4>{{year}}</h4>
+          <i class="fa fa-times fa-1x remove btn btn-default" style="color: silver" id="{{idNum}}-remove" class="media-top"> Remove</i>
           </div>
         </div>
     </div>
