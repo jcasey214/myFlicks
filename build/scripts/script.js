@@ -231,11 +231,10 @@ function getDetailsForMovie(movie) {
       }
     }
   }
-    // }else{
-      myList.push(movieInfo);
-      localStorage.setItem('myList', JSON.stringify(myList));
-      console.log(myList);
-      constructList(myList);
+    myList.push(movieInfo);
+    localStorage.setItem('myList', JSON.stringify(myList));
+    console.log(myList);
+    constructList(myList);
 
     // var source = $('#my-list-template').html();
     // var template = Handlebars.compile(source);
