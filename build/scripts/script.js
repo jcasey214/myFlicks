@@ -3,10 +3,13 @@ $(function(){
   var $input = $('input[name="search"]');
   var query;
   var $div = $('div.col-md-6');
+  var $listDiv = $('div.col-md-3.well');
   var myList = JSON.parse(localStorage.getItem('myList')) || [];
   console.log(myList);
   if(myList !== null && myList.length > 0){
     contructList(myList);
+  }else{
+    $listDiv.hide();
   }
 
 
@@ -14,6 +17,7 @@ $(function(){
     $div.empty();
     event.preventDefault();
     query = $input.val();
+    $div.append("<h1>Search '" + query + "'</h1><hr>");
     // console.log(query);
     theMovieDb.search.getMovie({"query": query}, successCB, errorCB);
   });
@@ -24,6 +28,9 @@ $(function(){
     for (var i = 0; i < result.results.length; i++) {
       var context = result.results[i];
       context.poster_path = "http://image.tmdb.org/t/p/w185" + context.poster_path;
+      if(context.poster_path == "http://image.tmdb.org/t/p/w185null"){
+        context.poster_path = "http://img1.wikia.nocookie.net/__cb20141028171337/pandorahearts/images/a/ad/Not_available.jpg";
+      }
       getDetailsForMovie(context);
       if (i === 5){
         break;
@@ -186,12 +193,15 @@ function getDetailsForMovie(movie) {
     console.log(event.target);
     var $selection = $(event.target);
     var movieInfo = new Movie($selection);
+    console.log(movieInfo);
     myList.push(movieInfo);
     localStorage.setItem('myList', JSON.stringify(myList));
     console.log(myList);
     var source = $('#my-list-template').html();
     var template = Handlebars.compile(source);
+    $listDiv.show().slideDown();
     $listDiv.empty();
+    $listDiv.append('<h2>My List</h2>');
     for (var i = 0; i < myList.length; i++){
       var context = myList[i];
       var html = template(context);
@@ -206,6 +216,7 @@ function getDetailsForMovie(movie) {
     var source = $('#my-list-template').html();
     var template = Handlebars.compile(source);
     $listDiv.empty();
+    $listDiv.append('<h2>My List</h2>');
     for (var i = 0; i < array.length; i++){
       var context = array[i];
       var html = template(context);
@@ -217,6 +228,11 @@ function Movie(obj){
   this.year = obj.data('year');
   this.poster = obj.data('poster');
   this.netflix = obj.data('nf');
+  this.idNum = obj.attr('id');
+}
+
+function removeEventListener(){
+
 }
 
   // function nnnetflixStatus(obj){
