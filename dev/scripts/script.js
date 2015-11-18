@@ -10,6 +10,13 @@ $(function(){
   }
   console.log(myList);
   if(myList !== null && myList.length > 0){
+    var result = [];
+    for (var i = 0; i <myList.length; i++){
+      console.log(myList[i]);
+      var movie = netflixStatus(myList[i]);
+      result.push(movie);
+      console.log(result);
+    }
     constructList(myList);
   }else{
     $listDiv.hide();
@@ -20,9 +27,13 @@ $(function(){
     $div.empty();
     event.preventDefault();
     query = $input.val();
+    if(query === ''){
+      $div.append("<h1>Enter a Movie Title in the Search Box</h1><hr>");
+    }else{
     $div.append("<h1>Search '" + query + "'</h1><hr>");
     // console.log(query);
     theMovieDb.search.getMovie({"query": query}, successCB, errorCB);
+    }
   });
 
   function successCB(data) {
@@ -155,33 +166,47 @@ function getDetailsForMovie(movie) {
 
   function netflixStatus(movie){
     var deferred = jQuery.Deferred();
-    var year = movie.release_date.split('-')[0];
-    movie.year = year;
-    var title = movie.original_title;
+    var title;
+    if(movie.hasOwnProperty('release_date')){
+      year = movie.release_date.split('-')[0];
+      movie.year = year;
+    }
+    if(movie.hasOwnProperty('original_title')){
+      title = movie.original_title;
+    }else{
+      title = movie.movieTitle;
+    }
     // var check = "class='fa fa-check-circle' color='green'";
     // var circle = 'class="fa fa-circle" color="red"';
+    console.log(title, movie.year);
     Netflix.search(title)
     .done(function(data){
-      // console.log(data);
+      console.log(data);
       if(data.length > 0){
         for(var i = 0; i < data.length; i ++){
-          if(data[i].title === title){
+          console.log(data[i].title, title);
+          if(data[i].title === title.trim()){
             movie.netflix = true;
+            console.log('found it');
             // movie.netflixIcon = 'check';
             deferred.resolve(movie);
+            return movie;
           }else{
             console.log('The movie is not currently available on Netflix');
             movie.netflix = false;
             // movie.netflixIcon = 'circle';
             deferred.resolve(movie);
+            return movie;
           }
         }
     }else{
       console.log('The movie is not currently available on Netflix');
       movie.netflix = false;
-      movie.netflixIcon = 'circle';
+      // movie.netflixIcon = 'circle';
       deferred.resolve(movie);
+      return movie;
     }
+    console.log(movie);
     }).fail(function(error){
       deferred.resolve(movie);
   });
@@ -198,10 +223,19 @@ function getDetailsForMovie(movie) {
     var movieInfo = new Movie($selection);
     console.log(movieInfo);
     myList = JSON.parse(localStorage.getItem('myList'));
+    if(myList.length > 0){
+    for(var i = 0; i < myList.length; i++){
+      if(myList[i].movieTitle === movieInfo.movieTitle){
+        console.log('blocked');
+        return;
+      }
+    }
+  }
     myList.push(movieInfo);
     localStorage.setItem('myList', JSON.stringify(myList));
     console.log(myList);
     constructList(myList);
+
     // var source = $('#my-list-template').html();
     // var template = Handlebars.compile(source);
     // $listDiv.show().slideDown();
@@ -228,7 +262,6 @@ function getDetailsForMovie(movie) {
       var html = template(context);
       $listDiv.append(html);
       $('#' + context.idNum + "-remove").on('click', removeItem);
-      console.log('i#' + context.idNum);
     }
 }
 function Movie(obj){
@@ -261,28 +294,4 @@ function removeItem(){
   }
   return myList;
 }
-
-  // function nnnetflixStatus(obj){
-  //   var deferred = $.Deferred();
-  //   var year = obj.release_date.split('-')[0];
-  //   var title = obj.original_title;
-  //   $.get('https://netflixroulette.net/api/api.php?title=' + title + '&year=' + year)
-  //   .done(function(data){
-  //     console.log(data);
-  //     obj.netflix = true;
-  //   })
-  //   .fail(function(){
-  //     console.log('That title is not currently available');
-  //     obj.netflix = false;
-  //   });
-  // }
-
-
-
-
-
-
-
-
-
 });
