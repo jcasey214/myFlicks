@@ -8,11 +8,9 @@ $(function(){
   if(JSON.parse(localStorage.getItem('myList')) === null){
     localStorage.setItem('myList', JSON.stringify(myList));
   }
-  console.log(myList);
   if(myList.length > 0){
     myListUpdateNetflixStatus(myList)
     .then(function(results){
-      console.log(results);
       localStorage.setItem('myList', JSON.stringify(myList));
       constructList(myList);
   });
@@ -28,6 +26,7 @@ $(function(){
     query = $input.val();
     if(query === ''){
       $div.append("<h1>Enter a Movie Title in the Search Box</h1><hr>");
+      $div.append("<img src='./assets/action.png' alt='camera' width='70%'>");
     }else{
     $div.append("<h1>Search '" + query + "'</h1><hr>");
     // console.log(query);
@@ -37,7 +36,9 @@ $(function(){
 
   function successCB(data) {
     var result = JSON.parse(data);
-    console.log(result);
+    if(result.results.length === 0){
+      errorCB(data);
+    }
     for (var i = 0; i < result.results.length; i++) {
       var context = result.results[i];
       context.poster_path = "http://image.tmdb.org/t/p/w185" + context.poster_path;
@@ -51,7 +52,7 @@ $(function(){
     }
 }
   function errorCB(data) {
-    console.log("Error callback: " + data);
+    $div.append('<h2>Did not return any results : (</h2>');
     }
 
 function getDetailsForMovie(movie) {
@@ -62,33 +63,14 @@ function getDetailsForMovie(movie) {
       getDirector(movie).done(function(movie){
         getTrailer(movie).done(function(movie){
           netflixStatus(movie).done(function(movie){
-          // console.log(movie);
-          // var dataMovie = new Movie(movie);
-          // console.log(dataMovie);
-          // console.log(dataMovie.toString());
-          // console.log(JSON.stringify(dataMovie));
-          // movie.movieData = JSON.stringify(dataMovie);
           var html = template(movie);
-          // movie.movieData = JSON.stringify(movie);
           $div.append(html);
-          // $icon = $('.media-right > i');
-          // if ($icon.hasClass('check')){
-          //   $icon.removeClass('check');
-          //   $icon.addClass('fa fa-check-circle fa-4x')
-          //   .css('color', 'green');
-          // }else if ($icon.hasClass('circle')){
-          //   $icon.removeClass('circle');
-          //   $icon.addClass('fa fa-circle fa-4x')
-          //   .css('color', 'red');
-          // }
-          // addButtonEventListener();
           $('#' + movie.id + "-add").on('click', addButtonEventListener);
         });
         });
       });
     })
     .fail(function(){
-      console.log(error);
     });
 }
 
@@ -98,8 +80,6 @@ function getDetailsForMovie(movie) {
     theMovieDb.movies.getCredits({"id": movie.id },
      function(data){
       var result = JSON.parse(data);
-      // console.log(result);
-      // obj.director = result.crew[0].name;
       var cast = result.cast;
       var starring = 'Cast: ';
       for (var i = 0; i < cast.length; i ++){
@@ -111,7 +91,6 @@ function getDetailsForMovie(movie) {
           break;
         }
       }
-      // console.log(starring);
       movie.starring = starring;
       deferred.resolve(movie);
     }, function(error){
@@ -126,7 +105,6 @@ function getDetailsForMovie(movie) {
     theMovieDb.movies.getCredits({"id": movie.id }, function(data){
       var director;
       var result = JSON.parse(data);
-      // obj.director = result.crew[0].name;
       var crew = result.crew;
       for(var i = 0; i < crew.length; i ++){
         if(crew[i].job.toLowerCase() === "director"){
@@ -134,8 +112,6 @@ function getDetailsForMovie(movie) {
         break;
         }
       }
-       // get the director out of the result
-      // console.log(director);
       movie.director = director;
       deferred.resolve(movie);
     }, function(error){
@@ -149,11 +125,8 @@ function getDetailsForMovie(movie) {
     var deferred = jQuery.Deferred();
     theMovieDb.movies.getTrailers({"id": movie.id }, function(data){
       var result = JSON.parse(data);
-      // console.log(result);
       if(result.youtube.length > 0) {
-        // obj.director = result.crew[0].name;
-        var trailerLink = 'https: //www.youtube.com/watch?v=' + result.youtube[0].source;// get the director out of the result
-        // console.log(trailerLink);
+        var trailerLink = 'https: //www.youtube.com/watch?v=' + result.youtube[0].source;
         movie.trailerLink = trailerLink;
       }
       deferred.resolve(movie);
@@ -175,37 +148,25 @@ function getDetailsForMovie(movie) {
     }else{
       title = movie.movieTitle;
     }
-    // var check = "class='fa fa-check-circle' color='green'";
-    // var circle = 'class="fa fa-circle" color="red"';
-    console.log(title, movie.year);
     Netflix.search(title)
     .done(function(data){
-      console.log(data);
       if(data.length > 0){
         for(var i = 0; i < data.length; i ++){
-          console.log(data[i].title, title);
           if(data[i].title === title.trim()){
             movie.netflix = true;
-            console.log('found it');
-            // movie.netflixIcon = 'check';
             deferred.resolve(movie);
             return movie;
           }else{
-            console.log('The movie is not currently available on Netflix');
             movie.netflix = false;
-            // movie.netflixIcon = 'circle';
             deferred.resolve(movie);
             return movie;
           }
         }
     }else{
-      console.log('The movie is not currently available on Netflix');
       movie.netflix = false;
-      // movie.netflixIcon = 'circle';
       deferred.resolve(movie);
       return movie;
     }
-    console.log(movie);
     }).fail(function(error){
       deferred.resolve(movie);
   });
@@ -228,7 +189,6 @@ function getDetailsForMovie(movie) {
       movie.netflix = false;
       result.push(movie);
     }
-    console.log(result);
     return result;
   }
 
@@ -249,26 +209,18 @@ function getDetailsForMovie(movie) {
   }
 
   function addButtonEventListener(){
-  // $addButton = $('button.btn.btn-warning');
-  // $listDiv = $('div.col-md-3.well');
-  //$addButton.click(function(){
-    console.log('clicked');
-    console.log(event.target);
     var $selection = $(event.target);
     var movieInfo = new Movie($selection);
-    console.log(movieInfo);
     myList = JSON.parse(localStorage.getItem('myList'));
     if(myList.length > 0){
     for(var i = 0; i < myList.length; i++){
       if(myList[i].movieTitle === movieInfo.movieTitle){
-        console.log('blocked');
         return;
       }
     }
   }
     myList.push(movieInfo);
     localStorage.setItem('myList', JSON.stringify(myList));
-    console.log(myList);
     constructList(myList);
 }
 
@@ -296,12 +248,9 @@ function Movie(obj){
 
 function removeItem(){
   var result = [];
-  console.log('clicked');
   var removalID = $(event.target).attr('id');
   removalID = removalID.replace('-remove', '');
-  console.log(removalID);
   for(var i = 0; i < myList.length; i++){
-    console.log(myList[i].idNum);
     if(myList[i].idNum === removalID){
       continue;
     }else{
