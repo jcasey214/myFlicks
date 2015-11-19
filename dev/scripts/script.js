@@ -10,13 +10,8 @@ $(function(){
   }
   console.log(myList);
   if(myList !== null && myList.length > 0){
-    var result = [];
-    for (var i = 0; i <myList.length; i++){
-      console.log(myList[i]);
-      var movie = netflixStatus(myList[i]);
-      result.push(movie);
-      console.log(result);
-    }
+    myList = myListUpdateNetflixStatus(myList);
+    localStorage.setItem(JSON.stringify(myList));
     constructList(myList);
   }else{
     $listDiv.hide();
@@ -212,6 +207,37 @@ function getDetailsForMovie(movie) {
   });
     return deferred;
   }
+
+  function myListUpdateNetflixStatus(array){
+    var title;
+    var result = [];
+    for(var i = 0; i < array.length; i++){
+      title = array[i].movieTitle;
+      Netflix.search(title)
+      .done(checkStatus(data));
+    }
+  }
+
+  function checkStatus(data){
+      if(data.length > 0){
+        for(var j = 0; j < data.length; j++){
+          if(data[j].title === title.trim()){
+            array[i].netflix = true;
+            result.push(array[i]);
+          }else{
+            array[i].netflix = false;
+            result.push(array[i]);
+          }
+        }
+    }else{
+      movie.netflix = false;
+      result.push(array[i]);
+    }
+    console.log(result);
+    return result;
+  }
+
+
 
   function addButtonEventListener(){
   // $addButton = $('button.btn.btn-warning');
