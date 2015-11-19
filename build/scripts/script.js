@@ -28,7 +28,7 @@ $(function(){
     event.preventDefault();
     query = $input.val();
     if(query === ''){
-      $div.append("<h1>Enter a Movie Title in the Search Box</h1><hr>");
+      $div.append("<h1>Enter a Movie Title in the Search Box</h1><hr><img src='/assets/action.png' width='60%' style='opacity:0.3'>");
     }else{
     $div.append("<h1>Search '" + query + "'</h1><hr>");
     // console.log(query);
