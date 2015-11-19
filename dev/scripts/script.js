@@ -2,25 +2,24 @@ $(function(){
   var $submit = $('#submit');
   var $input = $('input[name="search"]');
   var query;
-  var $div = $('div.col-md-6');
-  var $listDiv = $('div.col-md-3.well');
+  var $div = $('div.col-md-7');
+  var $listDiv = $('div.col-md-4.well');
   var myList = JSON.parse(localStorage.getItem('myList')) || [];
   if(JSON.parse(localStorage.getItem('myList')) === null){
     localStorage.setItem('myList', JSON.stringify(myList));
   }
   console.log(myList);
-  if(myList !== null && myList.length > 0){
-    var result = [];
-    for (var i = 0; i <myList.length; i++){
-      console.log(myList[i]);
-      var movie = netflixStatus(myList[i]);
-      result.push(movie);
-      console.log(result);
-    }
-    constructList(myList);
+  if(myList.length > 0){
+    myListUpdateNetflixStatus(myList)
+    .then(function(results){
+      console.log(results);
+      localStorage.setItem('myList', JSON.stringify(myList));
+      constructList(myList);
+  });
   }else{
     $listDiv.hide();
   }
+  theMovieDb.discover.getMovies({'primary_release_date.lte': '2015-01-01' }, successCB, errorCB);
 
 
   $submit.on('click', function(event){
@@ -213,6 +212,42 @@ function getDetailsForMovie(movie) {
     return deferred;
   }
 
+  function checkStatus(data, movie){
+      var result = [];
+      if(data.length > 0){
+        for(var j = 0; j < data.length; j++){
+          if(data[j].title === movie.movieTitle.trim()){
+            movie.netflix = true;
+            result.push(movie);
+          }else{
+            movie.netflix = false;
+            result.push(movie);
+          }
+        }
+    }else{
+      movie.netflix = false;
+      result.push(movie);
+    }
+    console.log(result);
+    return result;
+  }
+
+  function myListUpdateNetflixStatus(array){
+    var title;
+    var promises = [];
+    array.forEach(function(movie){
+      var p = new Promise(function(resolve, reject){
+        title = movie.movieTitle;
+        Netflix.search(title).done(function(data){
+          var result = checkStatus(data, movie);
+          resolve(result);
+        });
+      });
+      promises.push(p);
+    });
+    return Promise.all(promises);
+  }
+
   function addButtonEventListener(){
   // $addButton = $('button.btn.btn-warning');
   // $listDiv = $('div.col-md-3.well');
@@ -235,23 +270,10 @@ function getDetailsForMovie(movie) {
     localStorage.setItem('myList', JSON.stringify(myList));
     console.log(myList);
     constructList(myList);
-
-    // var source = $('#my-list-template').html();
-    // var template = Handlebars.compile(source);
-    // $listDiv.show().slideDown();
-    // $listDiv.empty();
-    // $listDiv.append('<h2>My List</h2>');
-    // for (var i = 0; i < myList.length; i++){
-    //   var context = myList[i];
-    //   var html = template(context);
-    //   $listDiv.append(html);
-  // }
-    // event.stopPropagation();
-    //});
 }
 
   function constructList(array){
-    $listDiv = $('div.col-md-3.well');
+    $listDiv = $('div.col-md-4.well');
     var source = $('#my-list-template').html();
     var template = Handlebars.compile(source);
     $listDiv.show().slideDown();
