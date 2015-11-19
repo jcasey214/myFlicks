@@ -26,7 +26,7 @@ $(function(){
     query = $input.val();
     if(query === ''){
       $div.append("<h1>Enter a Movie Title in the Search Box</h1><hr>");
-      $div.append("<img src='./assets/action.png' alt='camera' width='70%'>");
+      $div.append("<img src='./build/assets/action.png' alt='camera' width='70%'>");
     }else{
     $div.append("<h1>Search '" + query + "'</h1><hr>");
     // console.log(query);
