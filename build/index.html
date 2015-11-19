@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>My Flicks</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="styles/reset.css" media="screen" title="no title">
+    <link rel="stylesheet" href="styles/bootstrap.css" media="screen" title="no title">
   </head>
   <body>
     <header>
@@ -72,6 +72,9 @@
             {{else}}
               <i class='fa fa-circle fa-4x' width="50px" style="color: red"></i>
             {{/if}}
+          </div>
+          <div class="embed-responsive embed-responsive-4by3 hidden">
+              <iframe class="embed-responsive-item" src="{{trailerLink}}"></iframe>
           </div>
           <hr>
         </div>

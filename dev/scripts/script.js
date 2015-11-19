@@ -20,7 +20,6 @@ $(function(){
   }
 
   var picker = Math.floor(Math.random() * 10) + 1;
-  console.log(picker);
 
   switch(picker){
     case 1:
@@ -36,7 +35,7 @@ $(function(){
       theMovieDb.discover.getMovies({'sort_by':'popularity.desc' }, successCB, errorCB);
       break;
     case 5:
-      theMovieDb.search.getMovie({'primary_release_date.lte': '2013-01-01'}, successCB, errorCB);
+      theMovieDb.discover.getMovie({'primary_release_date.lte': '2013-01-01'}, successCB, errorCB);
       break;
     case 6:
       theMovieDb.discover.getMovies({'sort_by': 'revenue.desc' }, successCB, errorCB);
@@ -55,9 +54,6 @@ $(function(){
       break;
 
   }
-
-
-
 
   $submit.on('click', function(event){
     $div.empty();
@@ -101,9 +97,11 @@ function getDetailsForMovie(movie) {
       getDirector(movie).done(function(movie){
         getTrailer(movie).done(function(movie){
           netflixStatus(movie).done(function(movie){
+          movie.trailerLink = movie.trailerLink.replace(/\s+/g, '').replace('watch?v=', 'embed/');
           var html = template(movie);
           $div.append(html);
           $('#' + movie.id + "-add").on('click', addButtonEventListener);
+          $('#' + movie.id + "-add").prev('img.media-object').on('click', displayVideo);
         });
         });
       });
@@ -302,5 +300,14 @@ function removeItem(){
     $listDiv.hide();
   }
   return myList;
+}
+
+function displayVideo(event){
+  console.log(event.target);
+  $target = $(event.target);
+  var $parent = $target.closest('div.media');
+  console.log(parent);
+  console.log($(this));
+  $parent.children('div.embed-responsive.embed-responsive-4by3').toggleClass('hidden');
 }
 });

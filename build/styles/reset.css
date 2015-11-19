@@ -6983,3 +6983,6 @@ a.list-group-item-danger.active:focus {
 
 i {
   display: inline-block; }
+
+.hidden {
+  display: none; }
