@@ -5,6 +5,7 @@ $(function(){
   var $div = $('div.col-md-7');
   var $listDiv = $('div.col-md-4.well');
   var myList = JSON.parse(localStorage.getItem('myList')) || [];
+
   if(JSON.parse(localStorage.getItem('myList')) === null){
     localStorage.setItem('myList', JSON.stringify(myList));
   }
@@ -17,7 +18,45 @@ $(function(){
   }else{
     $listDiv.hide();
   }
-  theMovieDb.discover.getMovies({'primary_release_date.lte': '2015-01-01' }, successCB, errorCB);
+
+  var picker = Math.floor(Math.random() * 10) + 1;
+  console.log(picker);
+
+  switch(picker){
+    case 1:
+      theMovieDb.discover.getMovies({'primary_release_date.lte': '2015-01-01' }, successCB, errorCB);
+      break;
+    case 2:
+      theMovieDb.movies.getTopRated({}, successCB, errorCB);
+      break;
+    case 3:
+      theMovieDb.discover.getMovies({'primary_release_date.lte': '2010-01-01' }, successCB, errorCB);
+      break;
+    case 4:
+      theMovieDb.discover.getMovies({'sort_by':'popularity.desc' }, successCB, errorCB);
+      break;
+    case 5:
+      theMovieDb.search.getMovie({'primary_release_date.lte': '2013-01-01'}, successCB, errorCB);
+      break;
+    case 6:
+      theMovieDb.discover.getMovies({'sort_by': 'revenue.desc' }, successCB, errorCB);
+      break;
+    case 7:
+      theMovieDb.genres.getMovies({"id": 28}, successCB, errorCB);
+      break;
+    case 8:
+      theMovieDb.discover.getMovies({'sort_by':'revenue.desc' }, successCB, errorCB);
+      break;
+    case 9://
+      theMovieDb.discover.getMovies({'primary_release_date.lte': '2014-01-01' }, successCB, errorCB);
+      break;
+    case 10:
+      theMovieDb.discover.getMovies({'primary_release_date.lte': '2014-01-01' }, successCB, errorCB);
+      break;
+
+  }
+
+
 
 
   $submit.on('click', function(event){
