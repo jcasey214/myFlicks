@@ -5,6 +5,7 @@ $(function(){
   var $div = $('div.col-md-7');
   var $listDiv = $('div.col-md-4.well');
   var myList = JSON.parse(localStorage.getItem('myList')) || [];
+  
   if(JSON.parse(localStorage.getItem('myList')) === null){
     localStorage.setItem('myList', JSON.stringify(myList));
   }
