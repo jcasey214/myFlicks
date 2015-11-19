@@ -9,10 +9,14 @@ $(function(){
     localStorage.setItem('myList', JSON.stringify(myList));
   }
   console.log(myList);
-  if(myList !== null && myList.length > 0){
-    myList = myListUpdateNetflixStatus(myList);
-    localStorage.setItem(JSON.stringify(myList));
-    constructList(myList);
+  if(myList.length > 0){
+    myListUpdateNetflixStatus(myList)
+    .then(function(results){
+      console.log(results);
+      localStorage.setItem('myList', JSON.stringify(myList));
+      constructList(myList);
+  });
+
   }else{
     $listDiv.hide();
   }
@@ -208,34 +212,43 @@ function getDetailsForMovie(movie) {
     return deferred;
   }
 
-  function myListUpdateNetflixStatus(array){
-    var title;
-    var result = [];
-    for(var i = 0; i < array.length; i++){
-      title = array[i].movieTitle;
-      Netflix.search(title)
-      .done(checkStatus(data));
-    }
-  }
-
-  function checkStatus(data){
+  function checkStatus(data, movie){
+      var result = [];
       if(data.length > 0){
         for(var j = 0; j < data.length; j++){
-          if(data[j].title === title.trim()){
-            array[i].netflix = true;
-            result.push(array[i]);
+          if(data[j].title === movie.movieTitle.trim()){
+            movie.netflix = true;
+            result.push(movie);
           }else{
-            array[i].netflix = false;
-            result.push(array[i]);
+            movie.netflix = false;
+            result.push(movie);
           }
         }
     }else{
       movie.netflix = false;
-      result.push(array[i]);
+      result.push(movie);
     }
     console.log(result);
     return result;
   }
+
+  function myListUpdateNetflixStatus(array){
+    debugger;
+    var title;
+    var promises = [];
+    array.forEach(function(movie){
+      var p = new Promise(function(resolve, reject){
+        title = movie.movieTitle;
+        Netflix.search(title).done(function(data){
+          var result = checkStatus(data, movie);
+          resolve(result);
+        });
+      });
+      promises.push(p);
+    });
+    return Promise.all(promises);
+  }
+
 
 
 
