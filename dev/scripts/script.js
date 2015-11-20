@@ -35,7 +35,7 @@ $(function(){
       theMovieDb.discover.getMovies({'sort_by':'popularity.desc' }, successCB, errorCB);
       break;
     case 5:
-      theMovieDb.discover.getMovie({'primary_release_date.lte': '2013-01-01'}, successCB, errorCB);
+      theMovieDb.discover.getMovies({'primary_release_date.lte': '2013-01-01'}, successCB, errorCB);
       break;
     case 6:
       theMovieDb.discover.getMovies({'sort_by': 'revenue.desc' }, successCB, errorCB);
