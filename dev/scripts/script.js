@@ -84,7 +84,7 @@ $(function(){
         context.poster_path = "http://img1.wikia.nocookie.net/__cb20141028171337/pandorahearts/images/a/ad/Not_available.jpg";
       }
       getDetailsForMovie(context);
-      if (i === 5){
+      if (i === 10){
         break;
       }
     }
@@ -103,8 +103,8 @@ $(function(){
         getDirector(movie).done(function(movie){
           getTrailer(movie).done(function(movie){
             netflixStatus(movie).done(function(movie){
-            movie.trailerLink = movie.trailerLink.replace(/\s+/g, '');
-            movie.trailerLink = movie.trailerLink.replace('watch?v=', 'embed/');
+            movie.trailerLink = movie.trailerLink.replace(/\s+/g,'');
+            movie.trailerLink = movie.trailerLink.replace('watch?v=','embed/');
             var html = template(movie);
             $div.append(html);
             $('#' + movie.id + "-add").on('click', addButtonEventListener);
