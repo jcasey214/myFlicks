@@ -6,9 +6,11 @@ $(function(){
   var $listDiv = $('div.col-md-4.well');
   var myList = JSON.parse(localStorage.getItem('myList')) || [];
 
+  //if first time to site, create empty array in localStorage
   if(JSON.parse(localStorage.getItem('myList')) === null){
     localStorage.setItem('myList', JSON.stringify(myList));
   }
+  //check netflix status of items in localStorage if appliclable
   if(myList.length > 0){
     myListUpdateNetflixStatus(myList)
     .then(function(results){
@@ -18,7 +20,7 @@ $(function(){
   }else{
     $listDiv.hide();
   }
-
+  //random number determines which movies are displayed on the landing page
   var picker = Math.floor(Math.random() * 10) + 1;
 
   switch(picker){
@@ -54,7 +56,7 @@ $(function(){
       break;
 
   }
-
+  //event handler for search/submit
   $submit.on('click', function(event){
     $div.empty();
     event.preventDefault();
@@ -68,6 +70,7 @@ $(function(){
     }
   });
 
+  //callback for submit click handler
   function successCB(data) {
     var result = JSON.parse(data);
     if(result.results.length === 0){
@@ -75,6 +78,7 @@ $(function(){
     }
     for (var i = 0; i < result.results.length; i++) {
       var context = result.results[i];
+      //create poster path URL from object property
       context.poster_path = "http://image.tmdb.org/t/p/w185" + context.poster_path;
       if(context.poster_path == "http://image.tmdb.org/t/p/w185null"){
         context.poster_path = "http://img1.wikia.nocookie.net/__cb20141028171337/pandorahearts/images/a/ad/Not_available.jpg";
@@ -85,10 +89,12 @@ $(function(){
       }
     }
   }
+  //execute if tmdb api call fails (if offline of if search return 0 results)
   function errorCB(data) {
     $div.append('<h2>Did not return any results </h2><img src="http://rack.3.mshcdn.com/media/ZgkyMDEzLzA3LzE4Lzc1L0RyLldoby41Mjg5ZC5naWYKcAl0aHVtYgkxMjAweDk2MDA-/571ec44d/6da/Dr.-Who.gif">');
     }
 
+//several api calls to get different pieces of information about eh search results
   function getDetailsForMovie(movie) {
     var source = $('#result-template').html();
     var template = Handlebars.compile(source);
@@ -111,7 +117,7 @@ $(function(){
       .fail(function(){
       });
   }
-
+//callback of getDetailsForMovie to get cast
   function getCast(movie){
     var deferred = jQuery.Deferred();
 
@@ -137,7 +143,7 @@ $(function(){
 
     return deferred;
   }
-
+//callback for getDetailsForMovie to get director
   function getDirector(movie){
     var deferred = jQuery.Deferred();
     theMovieDb.movies.getCredits({"id": movie.id }, function(data){
@@ -158,7 +164,7 @@ $(function(){
 
     return deferred;
   }
-
+//callback for getDetailsForMovie to get trailer url
   function getTrailer(movie){
     var deferred = jQuery.Deferred();
     theMovieDb.movies.getTrailers({"id": movie.id }, function(data){
@@ -173,7 +179,7 @@ $(function(){
     });
     return deferred;
   }
-
+//check netflix availability of movies upon search
   function netflixStatus(movie){
     var deferred = jQuery.Deferred();
     var title;
@@ -210,7 +216,7 @@ $(function(){
   });
     return deferred;
   }
-
+//check netflix availability of movies in localStorage
   function checkStatus(data, movie){
       var result = [];
       if(data.length > 0){
@@ -229,7 +235,7 @@ $(function(){
     }
     return result;
   }
-
+//queue movies in localStorage for checkstatus function
   function myListUpdateNetflixStatus(array){
     var title;
     var promises = [];
@@ -245,7 +251,7 @@ $(function(){
     });
     return Promise.all(promises);
   }
-
+//callback for the add button to move movies to user list
   function addButtonEventListener(){
     var $selection = $(event.target);
     var movieInfo = new Movie($selection);
@@ -261,7 +267,7 @@ $(function(){
     localStorage.setItem('myList', JSON.stringify(myList));
     constructList(myList);
 }
-
+//create list based on myList array in localStorage
   function constructList(array){
     $listDiv = $('div.col-md-4.well');
     var source = $('#my-list-template').html();
@@ -276,6 +282,7 @@ $(function(){
       $('#' + context.idNum + "-remove").on('click', removeItem);
     }
 }
+//create new movie object to limit/clarify data before pushing to localStorage
 function Movie(obj){
   this.movieTitle = obj.data('movie');
   this.year = obj.data('year');
@@ -283,7 +290,7 @@ function Movie(obj){
   this.netflix = obj.data('nf');
   this.idNum = obj.attr('id');
 }
-
+//remove item from user list and from local storage
 function removeItem(){
   var result = [];
   var removalID = $(event.target).attr('id');
@@ -303,7 +310,7 @@ function removeItem(){
   }
   return myList;
 }
-
+//display trailer video when clicking on movie poster img
 function displayVideo(event){
   $target = $(event.target);
   var $parent = $target.closest('div.media');
