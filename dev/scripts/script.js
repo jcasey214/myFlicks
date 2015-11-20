@@ -84,31 +84,33 @@ $(function(){
         break;
       }
     }
-}
+  }
   function errorCB(data) {
-    $div.append('<h2>Did not return any results : (</h2>');
+    $div.append('<h2>Did not return any results </h2><img src="http://rack.3.mshcdn.com/media/ZgkyMDEzLzA3LzE4Lzc1L0RyLldoby41Mjg5ZC5naWYKcAl0aHVtYgkxMjAweDk2MDA-/571ec44d/6da/Dr.-Who.gif">');
     }
 
-function getDetailsForMovie(movie) {
-  var source = $('#result-template').html();
-  var template = Handlebars.compile(source);
-  getCast(movie)
-    .done(function(movie){
-      getDirector(movie).done(function(movie){
-        getTrailer(movie).done(function(movie){
-          netflixStatus(movie).done(function(movie){
-          movie.trailerLink = movie.trailerLink.replace(/\s+/g, '').replace('watch?v=', 'embed/');
-          var html = template(movie);
-          $div.append(html);
-          $('#' + movie.id + "-add").on('click', addButtonEventListener);
-          $('#' + movie.id + "-add").prev('img.media-object').on('click', displayVideo);
+  function getDetailsForMovie(movie) {
+    var source = $('#result-template').html();
+    var template = Handlebars.compile(source);
+    getCast(movie)
+      .done(function(movie){
+        getDirector(movie).done(function(movie){
+          getTrailer(movie).done(function(movie){
+            netflixStatus(movie).done(function(movie){
+            movie.trailerLink = movie.trailerLink.replace(/\s+/g, '');
+            movie.trailerLink = movie.trailerLink.replace('watch?v=', 'embed/');
+            var html = template(movie);
+            $div.append(html);
+            $('#' + movie.id + "-add").on('click', addButtonEventListener);
+            $('#' + movie.id + "-add").prev('img.media-object').on('click', displayVideo);
+            $('.embed-responsive.embed-responsive-4by3').hide();
+          });
+          });
         });
-        });
+      })
+      .fail(function(){
       });
-    })
-    .fail(function(){
-    });
-}
+  }
 
   function getCast(movie){
     var deferred = jQuery.Deferred();
@@ -303,11 +305,8 @@ function removeItem(){
 }
 
 function displayVideo(event){
-  console.log(event.target);
   $target = $(event.target);
   var $parent = $target.closest('div.media');
-  console.log(parent);
-  console.log($(this));
-  $parent.children('div.embed-responsive.embed-responsive-4by3').toggleClass('hidden');
+  $parent.children('div.embed-responsive.embed-responsive-4by3').slideToggle(800);
 }
 });
